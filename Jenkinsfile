@@ -14,7 +14,7 @@ pipeline {
   agent any
 
   environment {
-    AWS_REGION       = 'us-east-1'
+    AWS_REGION       = 'us-east-2'
     AWS_ACCOUNT_ID   = credentials('aws-account-id')
     ECR_BACKEND      = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/capstone-backend"
     ECR_FRONTEND     = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/capstone-frontend"
