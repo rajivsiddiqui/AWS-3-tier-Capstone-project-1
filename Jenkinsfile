@@ -49,10 +49,21 @@ pipeline {
           sh 'npm test'
         }
       }
+      // post {
+      //   always {
+      //     junit 'backend/coverage/**/*.xml'
+      //   }
+      // }
+      // post {
+      //   always {
+      //     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+      //   }
+      // }
       post {
-        always {
-          junit 'backend/coverage/**/*.xml'
-        }
+       always {
+          junit allowEmptyResults: true,
+              testResults: 'backend/coverage/**/*.xml'
+          }
       }
     }
 
