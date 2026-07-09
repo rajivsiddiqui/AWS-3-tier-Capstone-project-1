@@ -121,10 +121,10 @@ terraform init
 
 # 2. Create a terraform.tfvars file with your values
 cat > terraform.tfvars << EOF
-aws_region    = "us-east-1"
+aws_region    = "us-east-2"
 project       = "capstone"
-key_pair_name = "your-key-pair-name"   # must exist in your AWS account
-your_ip       = "YOUR_PUBLIC_IP/32"    # run: curl ifconfig.me
+key_pair_name = "3245-ohio"   # must exist in your AWS account
+your_ip       = "103.204.211.175/32"    # run: curl ifconfig.me
 db_password   = "MySecurePass123!"
 EOF
 
