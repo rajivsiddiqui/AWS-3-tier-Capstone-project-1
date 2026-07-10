@@ -3,7 +3,10 @@ set -e
 yum update -y
 
 # Install Java 17 (Jenkins requirement)
-yum install -y java-17-amazon-corretto
+#yum install -y java-17-amazon-corretto     # java 17 not working in jenkins new versino 
+
+# Install Java 21
+sudo yum install -y java-21-amazon-corretto
 
 # Install Jenkins
 wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
