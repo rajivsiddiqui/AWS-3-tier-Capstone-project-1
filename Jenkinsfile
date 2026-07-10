@@ -110,103 +110,46 @@ pipeline {
     }
 
     // ----------------------------------------------------------
-    // stage('Deploy — Dev') {
-    //   //when { branch 'main' }
-    //   steps {
-    //     sshagent(['ec2-ssh-key']) {
-    //       sh """
-    //         ssh -o StrictHostKeyChecking=no ec2-user@${DEV_EC2_IP} '
-    //           aws ecr get-login-password --region ${AWS_REGION} | \
-    //             docker login --username AWS --password-stdin \
-    //             ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-
-    //           docker pull ${ECR_BACKEND}:${IMAGE_TAG}
-    //           docker pull ${ECR_FRONTEND}:${IMAGE_TAG}
-
-    //           docker stop capstone-backend  2>/dev/null || true
-    //           docker stop capstone-frontend 2>/dev/null || true
-    //           docker rm   capstone-backend  2>/dev/null || true
-    //           docker rm   capstone-frontend 2>/dev/null || true
-
-    //           docker run -d --name capstone-backend \
-    //             --network host \
-    //             -p 5000:5000 \
-    //             -e DB_HOST=${RDS_ENDPOINT} \
-    //             -e DB_USER=appuser \
-    //             -e DB_PASSWORD=${DB_PASSWORD} \
-    //             -e DB_NAME=capstone \
-    //             -e NODE_ENV=development \
-    //             ${ECR_BACKEND}:${IMAGE_TAG}
-
-    //           docker run -d --name capstone-frontend \
-    //             -p 80:80 \
-    //             ${ECR_FRONTEND}:${IMAGE_TAG}
-    //         '
-    //       """
-    //     }
-    //     echo "Deployed to Dev: http://${DEV_EC2_IP}"
-    //     echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
-    //     sh 'echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"'
-    //     echo '${RDS_ENDPOINT}'
-    //   }
-    // }
-
-    stage('Deploy - Dev') {
-    steps {
+    stage('Deploy — Dev') {
+      //when { branch 'main' }
+      steps {
         sshagent(['ec2-ssh-key']) {
-            withCredentials([
-                string(credentialsId: 'RDS_ENDPOINT', variable: 'RDS_HOST'),
-                string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASS'),
-                string(credentialsId: 'AWS_ACCOUNT_ID', variable: 'AWS_ACC_ID')
-            ]) {
-                sh '''
-                    ssh -o StrictHostKeyChecking=no ec2-user@''' + DEV_EC2_IP + ''' \
-                        DB_HOST="$RDS_HOST" \
-                        DB_PASS="$DB_PASS" \
-                        AWS_ACC_ID="$AWS_ACC_ID" \
-                        AWS_REGION="''' + AWS_REGION + '''" \
-                        ECR_BACKEND="''' + ECR_BACKEND + '''" \
-                        ECR_FRONTEND="''' + ECR_FRONTEND + '''" \
-                        IMAGE_TAG="''' + IMAGE_TAG + '''" \
-                        bash -s << 'ENDSSH'
+          sh """
+            ssh -o StrictHostKeyChecking=no ec2-user@${DEV_EC2_IP} '
+              aws ecr get-login-password --region ${AWS_REGION} | \
+                docker login --username AWS --password-stdin \
+                ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
-                        aws ecr get-login-password --region $AWS_REGION | \
-                            docker login --username AWS --password-stdin \
-                            $AWS_ACC_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+              docker pull ${ECR_BACKEND}:${IMAGE_TAG}
+              docker pull ${ECR_FRONTEND}:${IMAGE_TAG}
 
-                        docker pull $ECR_BACKEND:$IMAGE_TAG
-                        docker pull $ECR_FRONTEND:$IMAGE_TAG
+              docker stop capstone-backend  2>/dev/null || true
+              docker stop capstone-frontend 2>/dev/null || true
+              docker rm   capstone-backend  2>/dev/null || true
+              docker rm   capstone-frontend 2>/dev/null || true
 
-                        docker stop capstone-backend  2>/dev/null || true
-                        docker stop capstone-frontend 2>/dev/null || true
-                        docker rm   capstone-backend  2>/dev/null || true
-                        docker rm   capstone-frontend 2>/dev/null || true
+              docker run -d --name capstone-backend \
+                --network host \
+                -p 5000:5000 \
+                -e DB_HOST=${RDS_ENDPOINT} \
+                -e DB_USER=appuser \
+                -e DB_PASSWORD=${DB_PASSWORD} \
+                -e DB_NAME=capstone \
+                -e NODE_ENV=development \
+                ${ECR_BACKEND}:${IMAGE_TAG}
 
-                        docker run -d --name capstone-backend \
-                            --network host \
-                            -p 5000:5000 \
-                            -e DB_HOST=$DB_HOST \
-                            -e DB_PORT=3306 \
-                            -e DB_USER=appuser \
-                            -e DB_PASSWORD=$DB_PASS \
-                            -e DB_NAME=capstone \
-                            -e NODE_ENV=development \
-                            $ECR_BACKEND:$IMAGE_TAG
-
-                        docker run -d --name capstone-frontend \
-                            -p 80:80 \
-                            $ECR_FRONTEND:$IMAGE_TAG
-
-                        sleep 5
-                        echo "=== Backend Logs ==="
-                        docker logs capstone-backend
-
-ENDSSH
-                '''
-            }
+              docker run -d --name capstone-frontend \
+                -p 80:80 \
+                ${ECR_FRONTEND}:${IMAGE_TAG}
+            '
+          """
         }
+        echo "Deployed to Dev: http://${DEV_EC2_IP}"
+        echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
+        sh 'echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"'
+        echo '${RDS_ENDPOINT}'
+      }
     }
-}
 
     // ----------------------------------------------------------
     stage('Approval — Promote to Prod?') {
