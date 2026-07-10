@@ -129,6 +129,7 @@ pipeline {
               docker rm   capstone-frontend 2>/dev/null || true
 
               docker run -d --name capstone-backend \
+                --network host \
                 -p 5000:5000 \
                 -e DB_HOST=${RDS_ENDPOINT} \
                 -e DB_USER=appuser \
