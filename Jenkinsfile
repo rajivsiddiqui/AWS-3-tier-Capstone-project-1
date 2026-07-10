@@ -131,7 +131,7 @@ pipeline {
               docker run -d --name capstone-backend \
                 -p 5000:5000 \
                 -e DB_HOST=${RDS_ENDPOINT} \
-                -e DB_USER=appuser \
+                -e DB_USER=admin \
                 -e DB_PASSWORD=${DB_PASSWORD} \
                 -e DB_NAME=capstone \
                 -e NODE_ENV=development \
