@@ -111,7 +111,7 @@ pipeline {
 
     // ----------------------------------------------------------
     stage('Deploy — Dev') {
-      when { branch 'develop' }
+      when { branch 'main' }
       steps {
         sshagent(['ec2-ssh-key']) {
           sh """
