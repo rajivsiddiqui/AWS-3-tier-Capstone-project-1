@@ -111,7 +111,7 @@ pipeline {
 
     // ----------------------------------------------------------
     stage('Deploy — Dev') {
-      when { branch 'main' }
+      //when { branch 'main' }
       steps {
         sshagent(['ec2-ssh-key']) {
           sh """
@@ -149,7 +149,7 @@ pipeline {
 
     // ----------------------------------------------------------
     stage('Approval — Promote to Prod?') {
-      when { branch 'main' }
+      //when { branch 'main' }
       steps {
         timeout(time: 30, unit: 'MINUTES') {
           input message: "Deploy build #${BUILD_NUMBER} to PRODUCTION?",
@@ -161,7 +161,7 @@ pipeline {
 
     // ----------------------------------------------------------
     stage('Deploy — Prod') {
-      when { branch 'main' }
+      //when { branch 'main' }
       steps {
         sshagent(['ec2-ssh-key']) {
           sh """
