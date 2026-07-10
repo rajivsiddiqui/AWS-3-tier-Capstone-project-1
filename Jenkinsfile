@@ -116,31 +116,38 @@ pipeline {
         sshagent(['ec2-ssh-key']) {
           sh """
             ssh -o StrictHostKeyChecking=no ec2-user@${DEV_EC2_IP} '
-              aws ecr get-login-password --region ${AWS_REGION} | \
-                docker login --username AWS --password-stdin \
-                ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+              // aws ecr get-login-password --region ${AWS_REGION} | \
+              //   docker login --username AWS --password-stdin \
+              //   ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
 
-              docker pull ${ECR_BACKEND}:${IMAGE_TAG}
-              docker pull ${ECR_FRONTEND}:${IMAGE_TAG}
+              // docker pull ${ECR_BACKEND}:${IMAGE_TAG}
+              // docker pull ${ECR_FRONTEND}:${IMAGE_TAG}
 
-              docker stop capstone-backend  2>/dev/null || true
-              docker stop capstone-frontend 2>/dev/null || true
-              docker rm   capstone-backend  2>/dev/null || true
-              docker rm   capstone-frontend 2>/dev/null || true
+              // docker stop capstone-backend  2>/dev/null || true
+              // docker stop capstone-frontend 2>/dev/null || true
+              // docker rm   capstone-backend  2>/dev/null || true
+              // docker rm   capstone-frontend 2>/dev/null || true
 
-              docker run -d --name capstone-backend \
-                --network host \
-                -p 5000:5000 \
-                -e DB_HOST=${RDS_ENDPOINT} \
-                -e DB_USER=appuser \
-                -e DB_PASSWORD=${DB_PASSWORD} \
-                -e DB_NAME=capstone \
-                -e NODE_ENV=development \
-                ${ECR_BACKEND}:${IMAGE_TAG}
+              // docker run -d --name capstone-backend \
+              //   --network host \
+              //   -p 5000:5000 \
+              //   -e DB_HOST=${RDS_ENDPOINT} \
+              //   -e DB_USER=appuser \
+              //   -e DB_PASSWORD=${DB_PASSWORD} \
+              //   -e DB_NAME=capstone \
+              //   -e NODE_ENV=development \
+              //   ${ECR_BACKEND}:${IMAGE_TAG}
 
-              docker run -d --name capstone-frontend \
-                -p 80:80 \
-                ${ECR_FRONTEND}:${IMAGE_TAG}
+              // docker run -d --name capstone-frontend \
+              //   -p 80:80 \
+              //   ${ECR_FRONTEND}:${IMAGE_TAG}
+              echo "=== DEBUG ENV VARS ==="
+              echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
+              echo "DB_USER: ${DB_USER}"
+              echo "DB_NAME: ${DB_NAME}"
+              echo "IMAGE_TAG: ${IMAGE_TAG}"
+              echo "ECR_BACKEND: ${ECR_BACKEND}"
+              echo "======================"
             '
           """
         }
