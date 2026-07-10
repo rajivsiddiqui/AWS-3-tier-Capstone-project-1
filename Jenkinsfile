@@ -147,6 +147,7 @@ pipeline {
         echo "Deployed to Dev: http://${DEV_EC2_IP}"
         echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
         sh 'echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"'
+        echo '${RDS_ENDPOINT}'
       }
     }
 
