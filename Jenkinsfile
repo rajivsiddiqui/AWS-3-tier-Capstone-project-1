@@ -141,23 +141,11 @@ pipeline {
               docker run -d --name capstone-frontend \
                 -p 80:80 \
                 ${ECR_FRONTEND}:${IMAGE_TAG}
-              echo "=== DEBUG ENV VARS ==="
-              echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
-              echo "DB_USER: ${DB_USER}"
-              echo "DB_NAME: ${DB_NAME}"
-              echo "IMAGE_TAG: ${IMAGE_TAG}"
-              echo "ECR_BACKEND: ${ECR_BACKEND}"
-              echo "======================"
-
             '
           """
         }
         echo "Deployed to Dev: http://${DEV_EC2_IP}"
       }
-      //*******************add line********
-       
-
-      //***********************************
     }
 
     // ----------------------------------------------------------
