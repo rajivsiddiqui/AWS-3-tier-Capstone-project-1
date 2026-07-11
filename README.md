@@ -179,6 +179,7 @@ In Jenkins → Manage Jenkins → Plugins → Available plugins, install:
 - **AWS Steps** (Pipeline: AWS Steps)
 - **Docker Pipeline**
 - **Blue Ocean** (optional, nice UI)
+- **GitHub Integration** (this for webhook-trigger when push code)
 
 Click "Install without restart", then restart Jenkins.
 
@@ -232,6 +233,11 @@ git push -u origin main
 4. Events: **Just the push event**
 5. Save
 
+### Configure Jenkins to get automaticaly trigger when push
+ - Go to your pipeline job → Configure → scroll to Build Triggers:
+ - ✅ Check: "GitHub hook trigger for GITScm polling"
+ - Save
+ 
 Now every `git push` to `main` automatically triggers the pipeline.
 
 ---
