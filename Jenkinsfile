@@ -214,7 +214,6 @@ docker rm   capstone-frontend 2>/dev/null || true
 
 echo "=== Starting Backend ==="
 docker run -d --name capstone-backend \
-  --network host \
   --restart always \
   -e DB_HOST=$RDS_HOST \
   -e DB_PORT=3306 \
