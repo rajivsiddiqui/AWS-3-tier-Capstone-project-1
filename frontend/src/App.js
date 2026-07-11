@@ -61,7 +61,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>📋 Task Manager</h1>
+        <h1>📋 Task Manager 1</h1>
         <p>3-Tier AWS Capstone — Node.js + React + MySQL on RDS</p>
       </header>
 
