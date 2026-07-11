@@ -111,7 +111,7 @@ pipeline {
 
     // ----------------------------------------------------------
     stage('Deploy - Dev') {
-    steps {
+      steps {
         sshagent(['ec2-ssh-key']) {
             withCredentials([
                 string(credentialsId: 'RDS_ENDPOINT',   variable: 'RDS_HOST'),
