@@ -173,7 +173,7 @@ ENDSSH
     }
 
     // ----------------------------------------------------------
-    stage('Deploy — Dev') {
+    stage('Deploy — Prod') {
       steps {
         withCredentials([
           string(credentialsId: 'aws-account-id', variable: 'AWS_ACC'),
