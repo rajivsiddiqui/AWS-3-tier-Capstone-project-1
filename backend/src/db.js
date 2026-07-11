@@ -4,8 +4,6 @@ let pool;
 
 function getPool() {
   if (!pool) {
-
-    // Add this block to validate env vars on startup
     const required = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
     for (const key of required) {
       if (!process.env[key]) {
@@ -13,12 +11,15 @@ function getPool() {
       }
     }
 
+    // Strip port if accidentally included in DB_HOST
+    const dbHost = process.env.DB_HOST.split(':')[0];
+
     pool = mysql.createPool({
-      host:     process.env.DB_HOST,        // ← removed || 'localhost'
+      host:     dbHost,
       port:     parseInt(process.env.DB_PORT),
-      user:     process.env.DB_USER,        // ← removed || 'appuser'
-      password: process.env.DB_PASSWORD,    // ← removed || 'apppassword'
-      database: process.env.DB_NAME,        // ← removed || 'capstone'
+      user:     process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       waitForConnections: true,
       connectionLimit:    10,
     });
