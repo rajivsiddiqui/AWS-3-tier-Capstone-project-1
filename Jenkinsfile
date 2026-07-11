@@ -173,77 +173,77 @@ ENDSSH
     }
 
     // ----------------------------------------------------------
-    stage('Deploy — Prod') {
+    stage('Deploy — Dev') {
       steps {
         withCredentials([
           string(credentialsId: 'aws-account-id', variable: 'AWS_ACC'),
           string(credentialsId: 'rds-endpoint',   variable: 'RDS_HOST'),
           string(credentialsId: 'db-password',    variable: 'DB_PASS'),
-          string(credentialsId: 'prod-ec2-ip',    variable: 'PROD_IP')
+          string(credentialsId: 'prod-ec2-ip',     variable: 'PROD_IP')
         ]) {
           sshagent(['ec2-ssh-key']) {
-            sh '''
-              ssh -o StrictHostKeyChecking=no \
-                  -o BatchMode=yes \
-                  ec2-user@$PROD_IP \
-                  AWS_REGION="us-east-2" \
-                  AWS_ACC="$AWS_ACC" \
-                  RDS_HOST="$RDS_HOST" \
-                  DB_PASS="$DB_PASS" \
-                  IMAGE_TAG="$BUILD_NUMBER" \
-                  bash -s << \'ENDSSH\'
+            sh """
+              ssh -o StrictHostKeyChecking=no -o BatchMode=yes ec2-user@\${PROD_IP} bash << 'ENDSSH'
 
-echo "=== Logging into ECR ==="
-aws ecr get-login-password --region $AWS_REGION | \
-  docker login --username AWS --password-stdin \
-  $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com
+    export AWS_REGION=us-east-2
+    export AWS_ACC=${AWS_ACC}
+    export RDS_HOST=${RDS_HOST}
+    export DB_PASS=${DB_PASS}
+    export IMAGE_TAG=${BUILD_NUMBER}
 
-echo "=== Pulling Images ==="
-docker pull $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-backend:$IMAGE_TAG
-docker pull $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-frontend:$IMAGE_TAG
+    echo "=== Logging into ECR ==="
+    aws ecr get-login-password --region \$AWS_REGION | \\
+      docker login --username AWS --password-stdin \\
+      \$AWS_ACC.dkr.ecr.\$AWS_REGION.amazonaws.com
 
-echo "=== Stopping Old Containers ==="
-docker stop capstone-backend  2>/dev/null || true
-docker stop capstone-frontend 2>/dev/null || true
-docker rm   capstone-backend  2>/dev/null || true
-docker rm   capstone-frontend 2>/dev/null || true
+    echo "=== Pulling Images ==="
+    docker pull \$AWS_ACC.dkr.ecr.\$AWS_REGION.amazonaws.com/capstone-backend:\$IMAGE_TAG
+    docker pull \$AWS_ACC.dkr.ecr.\$AWS_REGION.amazonaws.com/capstone-frontend:\$IMAGE_TAG
 
-echo "=== Starting Backend ==="
-docker run -d --name capstone-backend \
-  --network host \
-  --restart always \
-  -e DB_HOST=$RDS_HOST \
-  -e DB_PORT=3306 \
-  -e DB_USER=appuser \
-  -e DB_PASSWORD=$DB_PASS \
-  -e DB_NAME=capstone \
-  -e NODE_ENV=production \
-  $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-backend:$IMAGE_TAG
+    echo "=== Stopping Old Containers ==="
+    docker stop capstone-backend  2>/dev/null || true
+    docker stop capstone-frontend 2>/dev/null || true
+    docker rm   capstone-backend  2>/dev/null || true
+    docker rm   capstone-frontend 2>/dev/null || true
 
-echo "=== Starting Frontend ==="
-docker run -d --name capstone-frontend \
-  --network host \
-  --restart always \
-  # -p 80:80 \
-  $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-frontend:$IMAGE_TAG
+    echo "=== Starting Backend ==="
+    docker run -d --name capstone-backend \\
+      --network host \\
+      --restart always \\
+      -e DB_HOST=\$RDS_HOST \\
+      -e DB_PORT=3306 \\
+      -e DB_USER=appuser \\
+      -e DB_PASSWORD=\$DB_PASS \\
+      -e DB_NAME=capstone \\
+      -e NODE_ENV=development \\
+      \$AWS_ACC.dkr.ecr.\$AWS_REGION.amazonaws.com/capstone-backend:\$IMAGE_TAG
 
-echo "=== Waiting for backend to start ==="
-sleep 8
+    echo "=== Starting Frontend ==="
+    docker run -d --name capstone-frontend \\
+      --network host \\
+      --restart always \\
+      \$AWS_ACC.dkr.ecr.\$AWS_REGION.amazonaws.com/capstone-frontend:\$IMAGE_TAG
 
-echo "=== Backend Logs ==="
-docker logs capstone-backend
+    echo "=== Waiting for startup ==="
+    sleep 8
 
-echo "=== Running Containers ==="
-docker ps
+    echo "=== Backend Logs ==="
+    docker logs capstone-backend
 
+    echo "=== Frontend Logs ==="
+    docker logs capstone-frontend
+
+    echo "=== Running Containers ==="
+    docker ps
+
+    echo "=== Port Check ==="
+    ss -tlnp | grep -E '80|5000'
 ENDSSH
-            '''
+            """
           }
         }
-        echo "Deployed to Production"
       }
     }
-  }
 
   // ----------------------------------------------------------
   post {
