@@ -144,14 +144,6 @@ pipeline {
             '
           """
         }
-          sh '''
-            ssh ec2-user@$DEV_EC2_IP \
-            DB_HOST="$RDS_HOST" \
-            echo '${RDS_ENDPOINT}'
-            echo DB_HOST
-            bash -s << 'ENDSSH'  
-
-          '''
         echo "Deployed to Dev: http://${DEV_EC2_IP}"
         echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"
         sh 'echo "RDS_ENDPOINT: ${RDS_ENDPOINT}"'
