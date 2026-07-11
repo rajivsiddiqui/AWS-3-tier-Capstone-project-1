@@ -226,9 +226,9 @@ docker run -d --name capstone-backend \
 
 echo "=== Starting Frontend ==="
 docker run -d --name capstone-frontend \
-  --network host \      # ← add this
+  --network host \
   --restart always \
-  # -p 80:80 \          ← remove this, not needed with host network
+  # -p 80:80 \
   $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-frontend:$IMAGE_TAG
 
 echo "=== Waiting for backend to start ==="
