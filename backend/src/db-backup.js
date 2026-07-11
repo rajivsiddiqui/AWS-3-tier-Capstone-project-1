@@ -4,21 +4,12 @@ let pool;
 
 function getPool() {
   if (!pool) {
-
-    // Add this block to validate env vars on startup
-    const required = ['DB_HOST', 'DB_PORT', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
-    for (const key of required) {
-      if (!process.env[key]) {
-        throw new Error(`Missing required environment variable: ${key}`);
-      }
-    }
-
     pool = mysql.createPool({
-      host:     process.env.DB_HOST,        // ← removed || 'localhost'
-      port:     parseInt(process.env.DB_PORT),
-      user:     process.env.DB_USER,        // ← removed || 'appuser'
-      password: process.env.DB_PASSWORD,    // ← removed || 'apppassword'
-      database: process.env.DB_NAME,        // ← removed || 'capstone'
+      host:     process.env.DB_HOST     || 'localhost',
+      port:     parseInt(process.env.DB_PORT || '3306'),
+      user:     process.env.DB_USER     || 'appuser',
+      password: process.env.DB_PASSWORD || 'apppassword',
+      database: process.env.DB_NAME     || 'capstone',
       waitForConnections: true,
       connectionLimit:    10,
     });
