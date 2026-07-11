@@ -214,6 +214,7 @@ docker rm   capstone-frontend 2>/dev/null || true
 
 echo "=== Starting Backend ==="
 docker run -d --name capstone-backend \
+  --network host \
   --restart always \
   -e DB_HOST=$RDS_HOST \
   -e DB_PORT=3306 \
@@ -225,6 +226,7 @@ docker run -d --name capstone-backend \
 
 echo "=== Starting Frontend ==="
 docker run -d --name capstone-frontend \
+  --network host \
   --restart always \
   -p 80:80 \
   $AWS_ACC.dkr.ecr.$AWS_REGION.amazonaws.com/capstone-frontend:$IMAGE_TAG
