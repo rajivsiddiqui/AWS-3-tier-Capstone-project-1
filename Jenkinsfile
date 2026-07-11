@@ -154,8 +154,7 @@ pipeline {
 
     echo "=== Port Check ==="
     ss -tlnp | grep -E '80|5000'
-
-    ENDSSH
+ENDSSH
             """
           }
         }
