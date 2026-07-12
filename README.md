@@ -71,7 +71,7 @@ docker -v
 ```bash
 # Terminal 1: start MySQL locally (or skip if no MySQL, tests still pass)
 # If you have MySQL installed:
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS capstone; CREATE USER IF NOT EXISTS 'appuser'@'localhost' IDENTIFIED BY 'apppassword'; GRANT ALL ON capstone.* TO 'appuser'@'localhost';"
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS capstone; CREATE USER IF NOT EXISTS 'appuser'@'localhost' IDENTIFIED BY 'apppassword'; GRANT ALL ON capstone.* TO 'appuser'@'localhost';"
 
 # Terminal 1: start backend
 cd backend
@@ -245,7 +245,7 @@ Now every `git push` to `main` automatically triggers the pipeline.
 ### Allow jnekins IP in dev-server SG
  - add jenknis ip in dev-sg security group
  - make sure you are able to ssh from jenkins server to dev and prod server
- 
+
 ## PHASE 4 — Run the Pipeline
 
 ```bash
