@@ -237,11 +237,15 @@ git push -u origin main
  - Go to your pipeline job → Configure → scroll to Build Triggers:
  - ✅ Check: "GitHub hook trigger for GITScm polling"
  - Save
- 
+
 Now every `git push` to `main` automatically triggers the pipeline.
 
 ---
-
+## Before run the build need to do some task
+### Allow jnekins IP in dev-server SG
+ - add jenknis ip in dev-sg security group
+ - make sure you are able to ssh from jenkins server to dev and prod server
+ 
 ## PHASE 4 — Run the Pipeline
 
 ```bash
